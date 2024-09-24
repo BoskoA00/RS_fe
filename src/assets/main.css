@@ -1,0 +1,11 @@
+@font-face {
+  font-family: 'Euclid Circular A';
+  src: url('../assets/Fonts/Euclid\ Circular\ A\ Bold.ttf') format('truetype');
+}
+
+* {
+  margin: 0;
+}
+body {
+  font-family: 'Euclid Circular A';
+}

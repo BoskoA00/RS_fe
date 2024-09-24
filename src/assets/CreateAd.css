@@ -1,0 +1,355 @@
+@keyframes rotate {
+  100% {
+    background-position: 25% 50%;
+  }
+}
+
+:root {
+  --color-primary: #3192e5;
+}
+.filesList {
+  list-style-type: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.fileLi {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  padding: 8px 16px;
+  border: 1px solid rgba(17, 49, 70, 0.2);
+  border-radius: 6px;
+  margin-bottom: 8px;
+  width: 90%;
+  background-color: rgba(17, 49, 70, 0.05);
+}
+
+.fileLi div {
+  flex-grow: 1;
+  width: 100%;
+  text-align: center;
+}
+
+.fileLi button {
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 0 10px;
+  flex-shrink: 0;
+}
+.createAd-main {
+  padding-top: 20px;
+  padding-bottom: 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+.errorLabel {
+  padding-left: 10px;
+}
+.createAd-card {
+  width: 100%;
+  margin: 0 20px;
+  padding: 70px 30px 44px;
+  border-radius: 20px;
+  background: rgba(17 49 70 / 17%);
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+@media (width >= 448px) {
+  .createAd-card {
+    margin: 0;
+    width: 70%;
+    min-width: 400px;
+  }
+}
+
+@media (width >= 500px) {
+  body {
+    padding: 0;
+  }
+}
+
+@media (width >= 628px) {
+  .createAd-card {
+    padding: 0 44px;
+    width: 100%;
+    max-width: 800px;
+    min-width: auto;
+    display: flex;
+    border-radius: 20px;
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+.createAd-card > h2 {
+  font-size: 36px;
+  font-weight: 400;
+  margin: 0 0 12px;
+}
+
+.createAd-card > h3 {
+  color: rgba(37, 37, 37, 0.38);
+  margin: 0 0 48px;
+  font-weight: 400;
+  font-size: 16px;
+}
+
+.createAd-form {
+  width: 100%;
+  margin: 0;
+  display: grid;
+  gap: 16px;
+  padding-bottom: 20px;
+}
+.createAd-fileInput-wrapper {
+  position: relative;
+  width: 100%;
+  height: 56px;
+  background: rgba(17, 49, 70, 0.08);
+  color: rgba(37, 37, 37, 0.38);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  cursor: pointer;
+}
+
+.createAd-file-label {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.createAd-fileInput-wrapper input[type='file'] {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.createAd-file-label span {
+  color: rgba(37, 37, 37, 0.38);
+}
+
+.createAd-file-label span::before {
+  content: 'Upload: ';
+  font-weight: bold;
+}
+.createAd-form > :is(input, button) {
+  width: 100%;
+  height: 56px;
+  border-radius: 6px;
+  border: 0;
+}
+
+.createAd-form > input {
+  color: rgba(37, 37, 37, 0.38);
+  background: rgba(17, 49, 70, 0.08);
+  font-family: inherit;
+  font-size: 16px;
+  padding: 0 16px;
+}
+
+.createAd-form > input:focus {
+  outline: var(--color-primary);
+}
+
+.createAd-form > input::placeholder {
+  color: rgba(37, 37, 37, 0.38);
+}
+
+.createAd-form > button {
+  cursor: pointer;
+  width: 100%;
+  height: 56px;
+  padding: 0 16px;
+  background: var(--color-primary);
+  color: rgba(37, 37, 37, 0.38);
+  border: 0;
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 400;
+  text-align: center;
+  transition: all 0.375s;
+}
+
+.createAd-form > a {
+  color: var(--color-primary);
+  font-size: 16px;
+  text-align: left;
+  text-decoration: none;
+  margin-bottom: 30px;
+}
+
+.createAd-form label {
+  display: block;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 6px 0 8px;
+  color: rgba(37, 37, 37, 0.38);
+}
+
+.createAd-form label input {
+  visibility: hidden;
+  display: none;
+}
+.createAd-form > select {
+  width: 100%;
+  height: 56px;
+  border-radius: 6px;
+  border: 0;
+  color: rgba(37, 37, 37, 0.38);
+  background: rgba(17, 49, 70, 0.08);
+  font-family: inherit;
+  font-size: 16px;
+  padding: 0 16px;
+  appearance: none;
+}
+
+.createAd-form > select {
+  width: 100%;
+  height: 56px;
+  border-radius: 6px;
+  border: 0;
+  color: rgba(37, 37, 37, 0.38);
+  background: rgba(17, 49, 70, 0.08);
+  font-family: inherit;
+  font-size: 16px;
+  padding: 0 16px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.createAd-form > select option {
+  background-color: rgba(17, 49, 70, 0.9);
+  color: white;
+  padding: 10px;
+}
+.createAd-form > select option:hover {
+  cursor: pointer;
+}
+
+.createAd-form input:checked ~ .checkbox-wrapper .checkbox {
+  transform: rotate(45deg);
+  width: 14px;
+  margin-left: 12px;
+  margin-top: -2px;
+  border-color: var(--color-primary);
+  border-top-color: transparent;
+  border-left-color: transparent;
+  border-radius: 0;
+}
+
+.checkbox-wrapper {
+  width: 32px;
+  height: 32px;
+}
+
+.checkbox {
+  display: block;
+  width: inherit;
+  height: inherit;
+  border: 3px solid rgb(17 49 70 / 22%);
+  border-radius: 6px;
+  transition: all 0.375s;
+}
+@keyframes loader_5191 {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.square {
+  background: #ddd;
+  width: 10px;
+  height: 10px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -5px;
+  margin-left: -5px;
+}
+
+#sq1 {
+  margin-top: -25px;
+  margin-left: -25px;
+  animation: loader_5191 675ms ease-in-out 0s infinite alternate;
+}
+
+#sq2 {
+  margin-top: -25px;
+  animation: loader_5191 675ms ease-in-out 75ms infinite alternate;
+}
+
+#sq3 {
+  margin-top: -25px;
+  margin-left: 15px;
+  animation: loader_5191 675ms ease-in-out 150ms infinite;
+}
+
+#sq4 {
+  margin-left: -25px;
+  animation: loader_5191 675ms ease-in-out 225ms infinite;
+}
+
+#sq5 {
+  animation: loader_5191 675ms ease-in-out 300ms infinite;
+}
+
+#sq6 {
+  margin-left: 15px;
+  animation: loader_5191 675ms ease-in-out 375ms infinite;
+}
+
+#sq7 {
+  margin-top: 15px;
+  margin-left: -25px;
+  animation: loader_5191 675ms ease-in-out 450ms infinite;
+}
+
+#sq8 {
+  margin-top: 15px;
+  animation: loader_5191 675ms ease-in-out 525ms infinite;
+}
+
+#sq9 {
+  margin-top: 15px;
+  margin-left: 15px;
+  animation: loader_5191 675ms ease-in-out 600ms infinite;
+}
+@media (max-width: 600px) {
+  .createAd-form > input,
+  .createAd-form > select {
+    width: 80%;
+  }
+
+  .createAd-card {
+    padding: 40px 20px;
+  }
+  .createAd-fileInput-wrapper {
+    width: 80%;
+  }
+  .filesList {
+    padding: 0;
+  }
+}

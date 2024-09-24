@@ -1,0 +1,189 @@
+@font-face {
+  font-family: 'Euclid Circular A';
+  src: url('../assets/Fonts/Euclid Circular A Bold.ttf') format('truetype');
+}
+
+.nav-main {
+  user-select: none;
+  display: flex;
+  flex-direction: row;
+  height: 90px;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #0f2746;
+  padding: 0 20px;
+}
+
+.nav-main a {
+  color: white;
+  text-decoration: none;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.logo-image-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.logo-image-div img {
+  width: 100px;
+  height: 90px;
+}
+
+.app-name-div {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 90px;
+  padding-bottom: 10px;
+  color: white;
+}
+
+.links-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-right: 50px;
+  height: 90px;
+}
+
+.navigation-links {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  margin-bottom: 10px;
+  min-width: 200px;
+  max-width: 400px;
+  justify-content: space-around;
+}
+
+.navigation-links a {
+  font-size: 20px;
+  margin: 0 10px;
+  text-decoration: none;
+  color: white;
+  padding: 0px 5px;
+}
+
+.navigation-links a:hover {
+  background-color: white;
+  color: #0f2746;
+  transition: ease-in 0.5s;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 160px;
+  background-color: #0f2746;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  z-index: 1;
+}
+
+.dropdown-menu a {
+  color: white;
+  font-size: 18px;
+  white-space: nowrap;
+  padding: 10px;
+  display: block;
+  text-decoration: none;
+}
+
+.dropdown-menu a:hover {
+  background-color: white;
+  color: #0f2746;
+}
+
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
+
+.logout-button {
+  font-size: 18px;
+  color: white;
+  background-color: #0f2746;
+  font-family: 'Euclid Circular A';
+  border: none;
+  cursor: pointer;
+  margin-left: 10px;
+}
+
+.logout-button:hover {
+  background-color: white;
+  color: #0f2746;
+  transition: ease-in 0.5s;
+}
+
+@media (max-width: 768px) {
+  .nav-main {
+    flex-direction: column;
+    height: auto;
+    width: 100%;
+    padding: 0;
+    align-items: center;
+  }
+
+  .logo-container {
+    justify-content: center;
+    padding-left: 0;
+  }
+
+  .app-name-div {
+    justify-content: center;
+    padding-bottom: 0;
+    margin-top: 10px;
+  }
+
+  .navigation-links {
+    justify-content: center;
+    margin-bottom: 10px;
+    min-width: 100%;
+  }
+
+  .navigation-links a {
+    margin: 0 5px;
+    font-size: 18px;
+  }
+
+  .links-div {
+    margin-right: 0;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav-main {
+    padding: 0 10px;
+  }
+  .logo-container {
+    display: flex;
+    flex-direction: column;
+  }
+  .logo-image-div img {
+    width: 80px;
+    height: 70px;
+  }
+  .app-name-div {
+    height: auto;
+  }
+  .navigation-links a {
+    font-size: 16px;
+  }
+
+  .logout-button {
+    font-size: 16px;
+  }
+}

@@ -1,0 +1,137 @@
+.adsviewprofile-main {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  border: 5px solid #224c83;
+  margin-top: 50px;
+  margin-right: 20px;
+  margin-left: 20px;
+  border-radius: 20px;
+  padding: 50px;
+  height: 40vh;
+  margin-bottom: 40px;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+.adsviewprofile-card {
+  margin: 50px;
+  position: relative;
+  width: 300px;
+  height: 200px;
+  background-color: #f2f2f2;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  perspective: 1000px;
+  box-shadow: 0 0 0 5px #ffffff80;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.adsviewprofile-card svg {
+  width: 48px;
+  fill: #333;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.adsviewprofile-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 16px rgba(255, 255, 255, 0.2);
+}
+
+.adsviewprofile-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f2f2f2;
+  transform: rotateX(-90deg);
+  transform-origin: bottom;
+  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow-y: auto;
+}
+.adsviewprofile-content a {
+  text-decoration: none;
+  color: #333;
+}
+
+.adsviewprofile-card:hover .adsviewprofile-content {
+  transform: rotateX(0deg);
+}
+
+.adsviewprofile-title {
+  margin: 0;
+  font-size: 24px;
+  color: #333;
+  font-weight: 700;
+}
+
+.adsviewprofile-card:hover svg {
+  scale: 0;
+}
+
+.adsviewprofile-description {
+  margin: 10px 0 0;
+  font-size: 14px;
+  color: #777;
+  line-height: 1.4;
+}
+.adsviewprofile-options {
+  margin-top: -10px;
+  width: 100%;
+  height: 20px;
+  object-fit: contain;
+  display: flex;
+  flex-direction: row-reverse;
+  position: relative;
+}
+
+.adsviewprofile-options img {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.adsviewprofile-dropdown {
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 120px;
+  z-index: 100;
+}
+
+.adsviewprofile-dropdown button {
+  width: 100%;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.adsviewprofile-dropdown button:hover {
+  background-color: #f0f0f0;
+}
+@media (max-width: 720px) {
+  .adsviewprofile-main {
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+}
