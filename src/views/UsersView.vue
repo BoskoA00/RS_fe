@@ -1,9 +1,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
 import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
 import { useRouter } from 'vue-router'
+import { modalData } from '@/Stores/Modal'
 
 const router = useRouter()
 const users = ref([])
@@ -15,6 +16,10 @@ async function fetchUsers() {
     users.value = response.data.users
   } catch (error) {
     console.error('Error fetching users:', error)
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
     users.value = []
   }
 }
@@ -33,7 +38,10 @@ async function searchUsers() {
     users.value = response.data.users || []
   } catch (error) {
     console.error('Error searching users:', error)
-    alert('Error searching users.')
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 async function deleteUser(id) {
@@ -46,6 +54,17 @@ async function deleteUser(id) {
     users.value = users.value.filter((user) => user._id !== id)
   } catch (error) {
     console.error('Error deleting user:', error)
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 async function promoteUser(id) {
@@ -62,6 +81,17 @@ async function promoteUser(id) {
     }
   } catch (error) {
     console.error('Error promoting user:', error)
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 async function demoteUser(id) {
@@ -78,7 +108,17 @@ async function demoteUser(id) {
     }
   } catch (error) {
     console.error('Error demoting user:', error)
-    alert('Greška pri unazađivanju korisnika.')
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 
@@ -116,7 +156,11 @@ onMounted(() => {
         <tr v-for="user in users" :key="user._id" class="user-row">
           <template v-if="authState.loggedUser && user._id != authState.loggedUser.id">
             <td>{{ user.firstName }} {{ user.lastName }}</td>
-            <td>{{ user.email }}</td>
+            <td>
+              <RouterLink :to="{ name: 'profile', params: { id: user._id } }">
+                {{ user.email }}
+              </RouterLink>
+            </td>
             <td>{{ user.role }}</td>
             <td>
               <button
@@ -124,7 +168,7 @@ onMounted(() => {
                 @click="deleteUser(user._id)"
                 class="action-button delete"
               >
-                Izbrisi korisnika
+                Izbriši korisnika
               </button>
               <button
                 v-if="user.role > USER_ROLES.BUYER"
@@ -169,6 +213,10 @@ onMounted(() => {
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow-x: auto;
+}
+.users-table a {
+  text-decoration: none;
+  color: black;
 }
 
 .users-table thead {

@@ -1,6 +1,7 @@
 <script setup>
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
 import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
+import { modalData } from '@/Stores/Modal'
 import axios from 'axios'
 import { ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
@@ -35,6 +36,17 @@ async function handleDelete() {
     props.onAnswerDelete(props.answerId)
   } catch (error) {
     console.log(error)
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 </script>
@@ -70,7 +82,7 @@ async function handleDelete() {
       </button>
       <div v-if="showOptions" class="options-menu">
         <button @click="handleUpdate" class="menu-option">Izmeni odgovor</button>
-        <button @click="handleDelete" class="menu-option">Izbrisi odgovor</button>
+        <button @click="handleDelete" class="menu-option">Izbriši odgovor</button>
       </div>
     </div>
   </div>
@@ -88,6 +100,7 @@ async function handleDelete() {
   margin: 10px 10px;
   border-radius: 20px;
   overflow-x: auto;
+  min-height: 13vh;
 }
 
 .answer-content {
@@ -95,15 +108,18 @@ async function handleDelete() {
   padding: 10px;
   width: 80%;
   color: #224c83;
+  text-align: start;
+  overflow-wrap: break-word;
 }
 
 .answer-user {
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   padding: 0 10px;
+  height: 100%;
 }
 
 .answer-user a {
@@ -116,7 +132,8 @@ async function handleDelete() {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  align-items: center;
+  align-items: start;
+  height: 100%;
 }
 
 .options-button {
@@ -172,9 +189,13 @@ async function handleDelete() {
   }
 
   .answer-user {
-    flex-direction: row;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
     justify-content: flex-start;
-    width: 100%;
+    align-items: center;
+    padding: 0 10px;
+    height: 100%;
   }
 
   .options-menu {
@@ -201,11 +222,13 @@ async function handleDelete() {
   }
 
   .answer-user {
+    display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-    width: 100%;
-    padding: 5px;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 10px;
+    height: 100%;
   }
 
   .options img {

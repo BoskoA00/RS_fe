@@ -4,6 +4,7 @@ import { authState, LogOut } from '@/Stores/Auth'
 import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { modalData } from '@/Stores/Modal'
 const user = ref(0)
 const id = ref(0)
 const router = useRouter()
@@ -26,6 +27,14 @@ async function deleteUser() {
     router.push({ name: 'home' })
   } catch (error) {
     console.log(error)
+    if (error.response.data.message === 'Invalid token.') {
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 </script>

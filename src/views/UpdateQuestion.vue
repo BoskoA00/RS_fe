@@ -1,6 +1,7 @@
 <script setup>
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
 import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
+import { modalData } from '@/Stores/Modal'
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
@@ -56,9 +57,19 @@ async function updateQuestion() {
       }
     )
     isLoading.value = false
+    modalData.isGood = true
+    modalData.message = 'Uspesno ste izmenili pitanje.'
+    modalData.isVisible = true
     router.push({ name: 'forum' })
   } catch (error) {
     console.error(error)
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
     contentError.value = error.message
     isLoading.value = false
   } finally {
@@ -74,6 +85,14 @@ async function fetchQuestion() {
     content.value = question.value.content
     userId.value = question.value.userId._id
   } catch (error) {
+    if (error.response.data.message === 'Invalid token.') {
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
     console.log(error)
   }
 }

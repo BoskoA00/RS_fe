@@ -25,30 +25,25 @@
 .adview-images-div {
   display: flex;
   flex-direction: column;
-  justify-content: start;
   align-items: center;
   width: 50%;
-}
-
-.adview-main-image {
-  height: 80%;
-  width: 80%;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  background-color: #0f2746;
-  padding: 20px;
-  margin: 20px 0;
-  border-radius: 20px;
+  justify-content: space-evenly;
 }
 
 .adview-main-image img {
-  width: 300px;
-  height: 300px;
+  max-width: 100%;
+  max-height: 100%;
   object-fit: cover;
   margin: 10px;
   border-radius: 20px;
+  image-rendering: high-quality;
+}
+
+.adview-other-images img {
+  max-width: 100px;
+  max-height: 100px;
+  object-fit: contain;
+  margin: 5px;
 }
 
 .adview-other-images {
@@ -58,6 +53,7 @@
   flex-direction: row;
   justify-content: space-evenly;
   padding: 20px;
+  padding-top: 30px;
   align-items: start;
   overflow-y: hidden;
   background-color: #0f2746;
@@ -82,6 +78,8 @@
   border-radius: 20px;
   background-color: #e7e7e7;
   margin-bottom: 40px;
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
 .adview-other-image:hover {

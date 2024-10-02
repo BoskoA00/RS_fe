@@ -3,8 +3,9 @@ import { onMounted, ref } from 'vue'
 import '../assets/CreateAd.css'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
 import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
+import { modalData } from '@/Stores/Modal'
 const router = useRouter()
 const isLoading = ref(false)
 const title = ref('')
@@ -57,12 +58,12 @@ async function submitAd() {
     return
   }
   if (country.value.trim() == '') {
-    countryError.value = 'Zemlja je obavezna.'
+    countryError.value = 'Država je obavezna.'
     return
   }
   if (size.value <= 0 || isNaN(size.value)) {
     size.value = ''
-    sizeError.value = 'Velicina je neispravna.'
+    sizeError.value = 'Veličina je neispravna.'
     return
   }
   if (price.value <= 0 || isNaN(price.value)) {
@@ -87,11 +88,15 @@ async function submitAd() {
       formData.append('pictures', pictures.value[i])
     }
 
-    await axios.post(API_BASE_URL + 'ads', formData, {
+    let response = await axios.post(API_BASE_URL + 'ads', formData, {
       headers: {
         Authorization: `Bearer ${authState.authHeader}`
       }
     })
+    console.log(response)
+    modalData.isVisible = true
+    modalData.isGood = true
+    modalData.message = response.data.message
     title.value = ''
     titleError.value = ''
     city.value = ''
@@ -110,6 +115,18 @@ async function submitAd() {
   } catch (error) {
     console.log(error)
     isLoading.value = false
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    console.log('Error:', errorMessage)
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   } finally {
     isLoading.value = false
   }
@@ -137,9 +154,9 @@ onMounted(() => {
           <label class="errorLabel">{{ titleError }}</label>
           <input type="text" v-model="city" placeholder="Grad" @input="handleCityChange" />
           <label class="errorLabel">{{ cityError }}</label>
-          <input type="text" v-model="country" placeholder="Zemlja" @input="handleCountryChange" />
+          <input type="text" v-model="country" placeholder="Država" @input="handleCountryChange" />
           <label class="errorLabel">{{ countryError }}</label>
-          <input type="text" v-model="size" placeholder="Velicina(m^2)" @input="handleSizeChange" />
+          <input type="text" v-model="size" placeholder="Veličina(m^2)" @input="handleSizeChange" />
           <label class="errorLabel">{{ sizeError }}</label>
           <input
             type="text"

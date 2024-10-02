@@ -2,8 +2,10 @@
 import { ref } from 'vue'
 import '../../assets/HomePageAd.css'
 import axios from 'axios'
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
 import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
+import { modalData } from '@/Stores/Modal'
+import { useRouter } from 'vue-router'
 const props = defineProps({
   adId: String,
   title: String,
@@ -18,7 +20,7 @@ const props = defineProps({
   userId: String,
   onAdDelete: Function
 })
-
+const router = useRouter()
 const dropdownVisible = ref(false)
 
 function toggleDropdown() {
@@ -32,16 +34,31 @@ async function deleteAd() {
         Authorization: `Bearer ${authState.authHeader}`
       }
     })
+    modalData.isVisible = true
+    modalData.isGood = true
+    modalData.message = 'Oglas uspesno izbrisan!'
     props.onAdDelete(props.adId)
   } catch (error) {
     console.error(error)
+    if (error.response.data.message === 'Invalid token.') {
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 </script>
 
 <template>
   <div class="homepagead-card">
-    <img :src="`http://localhost:3000/ads-pictures/${props.image}`" alt="Ad Image" />
+    <img
+      class="main-picture"
+      :src="`http://localhost:3000/ads-pictures/${props.image}`"
+      alt="Ad Image"
+    />
 
     <div class="homepagead-content">
       <div
@@ -54,7 +71,7 @@ async function deleteAd() {
         <img src="/options.svg" @click.stop="toggleDropdown" />
         <div v-if="dropdownVisible" class="homepagead-dropdown">
           <button @click="deleteAd">
-            <div>Izbrisi</div>
+            <div>Izbriši</div>
             <div><img src="/DeleteAd.svg" /></div>
           </button>
           <RouterLink :to="{ name: 'updateAd', params: { id: props.adId } }">
@@ -68,7 +85,7 @@ async function deleteAd() {
       <RouterLink :to="{ name: 'ad', params: { id: props.adId || 'default-id' } }">
         <p class="homepagead-title">{{ props.title }}</p>
         <p class="homepagead-description">{{ props.city + ',' + props.country }}</p>
-        <p class="homepagead-description">Velicina: {{ props.size + 'm^2' }}</p>
+        <p class="homepagead-description">Veličina: {{ props.size + 'm^2' }}</p>
         <p class="homepagead-description">Cena: {{ props.price + ' &#8364;' }}</p>
         <p class="homepagead-description">{{ props.userFirstName + ' ' + props.userLastName }}</p>
       </RouterLink>

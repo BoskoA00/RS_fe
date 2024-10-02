@@ -5,6 +5,7 @@ import { Login, LogOut, authState } from './Stores/Auth.js'
 import { useRouter } from 'vue-router'
 import { onMounted } from 'vue'
 import { USER_ROLES } from './Stores/config'
+import ModalComponent from './components/Modal/ModalComponent.vue'
 
 const router = useRouter()
 
@@ -36,7 +37,7 @@ onMounted(() => {
     <div class="links-div">
       <nav class="navigation-links">
         <div class="dropdown">
-          <RouterLink to="/">Pocetna</RouterLink>
+          <RouterLink to="/">Početna</RouterLink>
           <div
             v-if="
               authState.isLoggedIn &&
@@ -61,10 +62,13 @@ onMounted(() => {
           </div>
         </div>
         <RouterLink v-if="authState.isLoggedIn" to="/myProfile">Profil</RouterLink>
-        <RouterLink v-if="!authState.isLoggedIn" to="/login">Login</RouterLink>
-        <button v-if="authState.isLoggedIn" class="logout-button" @click="logOut">Logout</button>
+        <RouterLink v-if="!authState.isLoggedIn" to="/login">Uloguj se</RouterLink>
+        <button v-if="authState.isLoggedIn" class="logout-button" @click="logOut">
+          Izloguj se
+        </button>
       </nav>
     </div>
+    <ModalComponent />
   </div>
 
   <RouterView />

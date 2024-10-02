@@ -1,5 +1,6 @@
 <script setup>
 import { API_BASE_URL } from '@/Stores/config'
+import { modalData } from '@/Stores/Modal'
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
 
@@ -96,6 +97,10 @@ async function getLimitations() {
     maxSizeLimit.value = r.data.maxSize
   } catch (error) {
     console.log(error)
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 onMounted(() => {
@@ -108,16 +113,16 @@ onMounted(() => {
     <h2>Pretraga</h2>
     <form class="form" @submit.prevent="handleSearch">
       <input type="text" v-model="city" placeholder="Grad" />
-      <input type="text" v-model="country" placeholder="Drzava" />
+      <input type="text" v-model="country" placeholder="Država" />
       <input type="text" v-model="maxPrice" placeholder="Maksimalna cena (&#8364;)" />
       <label>{{ maxPriceError }}</label>
       <input type="text" v-model="minPrice" placeholder="Minimalna cena (&#8364;)" />
       <label>{{ minPriceError }}</label>
 
-      <input type="text" v-model="maxSize" placeholder="Maksimalna velicina (m^2)" />
+      <input type="text" v-model="maxSize" placeholder="Maksimalna veličina (m^2)" />
       <label>{{ maxSizeError }}</label>
 
-      <input type="text" v-model="minSize" placeholder="Minimalna velicina (m^2)" />
+      <input type="text" v-model="minSize" placeholder="Minimalna veličina (m^2)" />
       <label>{{ minSizeError }}</label>
 
       <select v-model="type">

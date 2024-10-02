@@ -1,6 +1,7 @@
 <script setup>
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
 import { API_BASE_URL } from '@/Stores/config'
+import { modalData } from '@/Stores/Modal'
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -55,6 +56,13 @@ async function submitQuestion() {
     router.push({ name: 'forum' })
   } catch (error) {
     console.error(error)
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
     contentError.value = error.message
     isLoading.value = false
   } finally {
@@ -84,7 +92,7 @@ onMounted(() => {
           <textarea
             type="text"
             v-model="content"
-            placeholder="Sadrzaj pitanja..."
+            placeholder="Sadržaj pitanja..."
             @input="handleContentChange"
           ></textarea>
           <label class="errorLabel">{{ contentError }}</label>

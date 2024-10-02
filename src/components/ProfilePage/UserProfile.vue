@@ -4,7 +4,8 @@ import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
 import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import AdsViewProfile from './AdsViewProfile.vue'
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
+import { modalData } from '@/Stores/Modal'
 
 const route = useRoute()
 const router = useRouter()
@@ -37,6 +38,14 @@ async function deleteUser() {
     router.push({ name: 'home' })
   } catch (error) {
     console.log(error)
+    if (error.response.data.message === 'Invalid token.') {
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 </script>
@@ -76,7 +85,7 @@ async function deleteUser() {
         </div>
       </div>
     </div>
-    <AdsViewProfile :userId="id" />
+    <AdsViewProfile v-if="user.role != USER_ROLES.BUYER" :userId="id" />
   </template>
   <template v-else>
     <h2>Profile not found or loading...</h2>

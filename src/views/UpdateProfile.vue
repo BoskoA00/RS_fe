@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import axios from 'axios'
 import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
 import { authState, LogOut } from '@/Stores/Auth'
+import { modalData } from '@/Stores/Modal'
 
 const route = useRoute()
 const userId = route.params.id
@@ -72,26 +73,39 @@ async function updateUser() {
     if (authState.loggedUser.role != 2) {
       formData.append('role', type.value)
     }
-    let r = await axios.patch(API_BASE_URL + `user/${userId}`, formData, {
+    await axios.patch(API_BASE_URL + `user/${userId}`, formData, {
       headers: {
         Authorization: `Bearer ${authState.authHeader}`
       }
     })
 
-    if (userId === authState.loggedUser.id) {
-      authState.loggedUser.firstName = r.data.user.firstName
-      authState.loggedUser.lastName = r.data.user.lastName
-      authState.loggedUser.email = r.data.user.email
-      authState.loggedUser.imagePath = r.data.user.imagePath
-      if (authState.loggedUser.role != 2) {
-        authState.loggedUser.role = r.data.user.role
-      }
+    if (authState.loggedUser.id === userId) {
+      LogOut()
+
+      modalData.isVisible = true
+      modalData.isGood = true
+      modalData.message = 'Uspesno izmenjeni podaci. Ulogujte se ponovo.'
+      router.push({ name: 'login' })
+    } else {
+      router.push({ name: 'home' })
+
+      modalData.isVisible = true
+      modalData.isGood = true
+      modalData.message = 'Uspesno izmenjeni podaci.'
     }
-    LogOut()
-    router.push({ name: 'login' })
   } catch (e) {
     console.log(e)
-    alert(e.message)
+    if (e.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = e.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   } finally {
     isLoading.value = false
   }
