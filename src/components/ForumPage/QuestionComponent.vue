@@ -5,6 +5,7 @@ import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import AnswerComponent from './AnswerComponent.vue'
+import { modalData } from '@/Stores/Modal'
 
 const router = useRouter()
 const answers = ref([])
@@ -56,6 +57,11 @@ async function handleDelete() {
     if (error.response.data.message === 'Invalid token.') {
       LogOut()
       router.push('login')
+    } else {
+      const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+      modalData.isVisible = true
+      modalData.isGood = false
+      modalData.message = errorMessage
     }
   }
 }
@@ -113,7 +119,7 @@ onMounted(() => {
                 authState.loggedUser.id === userId
               "
             >
-              Izbrisi pitanje
+              Izbriši pitanje
               <img src="/DeleteAd.svg" alt="Delete" class="menu-icon" />
             </button>
           </div>

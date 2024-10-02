@@ -4,7 +4,8 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import '@/assets/UpdateAd.css'
 import { API_BASE_URL } from '@/Stores/config'
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
+import { modalData } from '@/Stores/Modal'
 const route = useRoute()
 const adId = route.params.id
 const title = ref('')
@@ -54,11 +55,11 @@ function submitAd() {
     return
   }
   if (country.value.trim() === '') {
-    countryError.value = 'Zemlja mora biti uneta'
+    countryError.value = 'Država mora biti uneta'
     return
   }
   if (size.value <= 0 || isNaN(size.value)) {
-    sizeError.value = 'Velicina mora biti uneta'
+    sizeError.value = 'Veličina mora biti uneta'
     return
   }
   updateAd()
@@ -82,9 +83,23 @@ async function updateAd() {
         }
       }
     )
+    modalData.isGood = true
+    modalData.isVisible = true
+    modalData.message = 'Oglas je uspešno izmenjen'
     router.push({ name: 'ad', params: { id: adId } })
   } catch (error) {
     console.log(error)
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   }
 }
 
@@ -121,9 +136,9 @@ onMounted(() => {
           <label class="errorLabel">{{ titleError }}</label>
           <input type="text" v-model="city" placeholder="Grad" @input="handleCityChange" />
           <label class="errorLabel">{{ cityError }}</label>
-          <input type="text" v-model="country" placeholder="Zemlja" @input="handleCountryChange" />
+          <input type="text" v-model="country" placeholder="Država" @input="handleCountryChange" />
           <label class="errorLabel">{{ countryError }}</label>
-          <input type="text" v-model="size" placeholder="Velicina(m^2)" @input="handleSizeChange" />
+          <input type="text" v-model="size" placeholder="Veličina(m^2)" @input="handleSizeChange" />
           <label class="errorLabel">{{ sizeError }}</label>
           <input
             type="text"

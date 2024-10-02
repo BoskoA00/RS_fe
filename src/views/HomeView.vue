@@ -116,8 +116,9 @@ watch(
 
 .homepage-ads {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(25%, 1fr));
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
+  overflow-y: auto;
 }
 
 .no-ads-div {
@@ -135,11 +136,14 @@ watch(
 
   .ads-components-div {
     width: 100%;
-    margin-right: 0;
+    margin-right: 10px;
   }
 
   .homepage-ads {
-    grid-template-columns: repeat(auto-fill, minmax(40%, 1fr));
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+    overflow-y: auto;
   }
 }
 
@@ -162,7 +166,10 @@ watch(
   }
 
   .homepage-ads {
-    grid-template-columns: repeat(auto-fill, minmax(50%, 1fr));
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+    overflow-y: auto;
   }
 }
 
@@ -177,7 +184,10 @@ watch(
   }
 
   .homepage-ads {
-    grid-template-columns: repeat(auto-fill, minmax(100%, 1fr));
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 20px;
+    overflow-y: auto;
   }
 }
 </style>

@@ -15,7 +15,7 @@ async function fetchQuestions() {
     questions.value = questions.value.reverse()
   } catch (error) {
     console.error(error)
-    questionsError.value = error.message
+    questionsError.value = error.response.data.message || 'Doslo je do greske.'
   }
 }
 function handleQuestionDelete(qeustionId) {

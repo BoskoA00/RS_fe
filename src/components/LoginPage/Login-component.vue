@@ -4,6 +4,7 @@ import { Login } from '@/Stores/Auth'
 import { API_BASE_URL } from '@/Stores/config'
 import axios from 'axios'
 import { useRouter } from 'vue-router'
+import { modalData } from '@/Stores/Modal'
 const loginForm = ref(true)
 const firstName = ref('')
 const lastName = ref('')
@@ -96,10 +97,13 @@ async function loginUser() {
     password.value = ''
     router.push({ name: 'myProfile' })
   } catch (e) {
-    console.log(e)
+    const errorMessage = e.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
     email.value = ''
     password.value = ''
     isLoading.value = false
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   } finally {
     email.value = ''
     password.value = ''
@@ -107,7 +111,7 @@ async function loginUser() {
   }
 }
 
-function registerUser() {
+async function registerUser() {
   if (firstName.value.trim() == '') {
     firstNameError.value = 'Morate uneti ime'
     return
@@ -145,12 +149,19 @@ function registerUser() {
     formData.append('role', type.value)
     formData.append('image', selectedPicture.value)
     formData.append('password', password.value)
-    axios.post(API_BASE_URL + 'user/register', formData)
+    let response = await axios.post(API_BASE_URL + 'user/register', formData)
     isLoading.value = false
+    modalData.isVisible = true
+    modalData.message = response.data.message
+    modalData.isGood = true
     formChangeHandler()
   } catch (e) {
+    console.log(e)
     isLoading.value = false
-    alert(e.message)
+    const errorMessage = e.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
   } finally {
     isLoading.value = false
   }
@@ -231,7 +242,7 @@ function submitForm() {
           </span>
         </label>
         <button type="submit">
-          {{ loginForm ? 'Login' : 'Register' }}
+          {{ loginForm ? 'Uloguj se' : 'Registruj se' }}
         </button>
       </form>
     </div>

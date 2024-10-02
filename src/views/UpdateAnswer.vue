@@ -1,6 +1,7 @@
 <script setup>
-import { authState } from '@/Stores/Auth'
+import { authState, LogOut } from '@/Stores/Auth'
 import { API_BASE_URL, USER_ROLES } from '@/Stores/config'
+import { modalData } from '@/Stores/Modal'
 import axios from 'axios'
 import { onMounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
@@ -39,10 +40,20 @@ async function updateAnswer() {
         }
       }
     )
+    modalData.isGood = true
+    modalData.message = 'Uspesno ste izmenili odgovor.'
+    modalData.isVisible = true
     isLoading.value = false
     router.push({ name: 'forum' })
   } catch (error) {
     console.error(error)
+    if (error.response.data.message === 'Invalid token.') {
+      modalData.isGood = false
+      modalData.message = 'Istekao token. Ulogujte se ponovo.'
+      modalData.isVisible = true
+      LogOut()
+      router.push('login')
+    }
     contentError.value = error.message
     isLoading.value = false
   } finally {
@@ -68,8 +79,8 @@ onMounted(() => {
   }
 
   if (
-    authState.loggedUser.role !== USER_ROLES.ADMINISTRATOR &&
-    authState.loggedUser.id !== userId.value
+    authState.loggedUser.role == USER_ROLES.ADMINISTRATOR &&
+    authState.loggedUser.id == userId.value
   ) {
     router.push({ name: 'home' })
   }
@@ -85,7 +96,7 @@ onMounted(() => {
           <textarea
             type="text"
             v-model="content"
-            placeholder="Sadrzaj odgovora..."
+            placeholder="Sadržaj odgovora..."
             @input="handleContentChange"
           ></textarea>
           <label class="errorLabel">{{ contentError }}</label>

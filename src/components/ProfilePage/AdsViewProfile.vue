@@ -3,6 +3,7 @@ import '@/assets/AdsViewProfile.css'
 import { onMounted, ref } from 'vue'
 import HomePageAd from '../HomePageAd/HomePageAd.vue'
 import axios from 'axios'
+import { modalData } from '@/Stores/Modal'
 const ads = ref([])
 const isLoading = ref(false)
 const props = defineProps({
@@ -18,6 +19,10 @@ async function fetchAds() {
     ads.value = ads.value.reverse()
   } catch (error) {
     console.error('Error fetching ads:', error)
+    const errorMessage = error.response?.data?.message || 'Došlo je do greške. Pokušajte ponovo.'
+    modalData.isVisible = true
+    modalData.isGood = false
+    modalData.message = errorMessage
     ads.value = []
   } finally {
     isLoading.value = false
