@@ -35,31 +35,83 @@ function handleSearch() {
   maxSizeError.value = ''
   minSizeError.value = ''
 
+  const fieldsToCheck = [
+    { value: maxPrice.value, name: 'maxPrice', errorLabel: maxPriceError },
+    { value: minPrice.value, name: 'minPrice', errorLabel: minPriceError },
+    { value: maxSize.value, name: 'maxSize', errorLabel: maxSizeError },
+    { value: minSize.value, name: 'minSize', errorLabel: minSizeError }
+  ]
+
+  fieldsToCheck.forEach((field) => {
+    if (field.value.trim() && isNaN(field.value.trim())) {
+      field.errorLabel.value = `${
+        field.name === 'maxPrice'
+          ? 'Maksimalna cena'
+          : field.name === 'minPrice'
+            ? 'Minimalna cena'
+            : field.name === 'maxSize'
+              ? 'Maksimalna veličina'
+              : 'Minimalna veličina'
+      } mora biti broj.`
+      hasError = true
+    }
+  })
+
   if (minPrice.value.trim() && !isNaN(minPrice.value.trim())) {
-    if (Number(minPrice.value.trim()) < minPriceLimit.value) {
+    const minPriceValue = Number(minPrice.value.trim())
+    if (minPriceValue < minPriceLimit.value) {
       minPriceError.value = `Minimalna moguća cena je ${minPriceLimit.value} €`
       hasError = true
+    } else if (maxPrice.value.trim() && !isNaN(maxPrice.value.trim())) {
+      const maxPriceValue = Number(maxPrice.value.trim())
+      if (minPriceValue >= maxPriceValue) {
+        minPriceError.value = 'Minimalna cena ne može biti veća ili jednaka maksimalnoj ceni.'
+        hasError = true
+      }
     }
   }
 
   if (maxPrice.value.trim() && !isNaN(maxPrice.value.trim())) {
-    if (Number(maxPrice.value.trim()) < maxPriceLimit.value) {
+    const maxPriceValue = Number(maxPrice.value.trim())
+    if (maxPriceValue > maxPriceLimit.value) {
       maxPriceError.value = `Maksimalna moguća cena je ${maxPriceLimit.value} €`
       hasError = true
+    } else if (minPrice.value.trim() && !isNaN(minPrice.value.trim())) {
+      const minPriceValue = Number(minPrice.value.trim())
+      if (maxPriceValue <= minPriceValue) {
+        maxPriceError.value = 'Maksimalna cena ne može biti manja ili jednaka minimalnoj ceni.'
+        hasError = true
+      }
     }
   }
 
   if (minSize.value.trim() && !isNaN(minSize.value.trim())) {
-    if (Number(minSize.value.trim()) > minSizeLimit.value) {
+    const minSizeValue = Number(minSize.value.trim())
+    if (minSizeValue < minSizeLimit.value) {
       minSizeError.value = `Minimalna moguća veličina je ${minSizeLimit.value} m²`
       hasError = true
+    } else if (maxSize.value.trim() && !isNaN(maxSize.value.trim())) {
+      const maxSizeValue = Number(maxSize.value.trim())
+      if (minSizeValue >= maxSizeValue) {
+        minSizeError.value =
+          'Minimalna veličina ne može biti veća ili jednaka maksimalnoj veličini.'
+        hasError = true
+      }
     }
   }
 
   if (maxSize.value.trim() && !isNaN(maxSize.value.trim())) {
-    if (Number(maxSize.value.trim()) < maxSizeLimit.value) {
+    const maxSizeValue = Number(maxSize.value.trim())
+    if (maxSizeValue > maxSizeLimit.value) {
       maxSizeError.value = `Maksimalna moguća veličina je ${maxSizeLimit.value} m²`
       hasError = true
+    } else if (minSize.value.trim() && !isNaN(minSize.value.trim())) {
+      const minSizeValue = Number(minSize.value.trim())
+      if (maxSizeValue <= minSizeValue) {
+        maxSizeError.value =
+          'Maksimalna veličina ne može biti manja ili jednaka minimalnoj veličini.'
+        hasError = true
+      }
     }
   }
 
@@ -74,6 +126,7 @@ function handleSearch() {
     minSize: minSize.value.trim() !== '' ? Number(minSize.value.trim()) : 0,
     type: type.value
   }
+
   props.searchAds(searchParams)
 }
 
