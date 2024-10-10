@@ -18,8 +18,6 @@ onMounted(() => {
   const userData = localStorage.getItem('user')
   if (token && userData) {
     Login(JSON.parse(userData), token)
-  } else {
-    router.push('/login')
   }
 })
 </script>

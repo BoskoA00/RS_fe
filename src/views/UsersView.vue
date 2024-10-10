@@ -161,7 +161,9 @@ onMounted(() => {
                 {{ user.email }}
               </RouterLink>
             </td>
-            <td>{{ user.role }}</td>
+            <td v-if="user.role === USER_ROLES.BUYER">Kupac</td>
+            <td v-else-if="user.role === USER_ROLES.SELLER">Prodavac</td>
+            <td v-else-if="user.role === USER_ROLES.ADMINISTRATOR">Administrator</td>
             <td>
               <button
                 v-if="user.role == USER_ROLES.BUYER"

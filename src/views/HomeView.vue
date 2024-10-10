@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, ref, watch, computed } from 'vue'
 import axios from 'axios'
 import HomePageAd from '@/components/HomePageAd/HomePageAd.vue'
 import { API_BASE_URL } from '@/Stores/config'
@@ -7,19 +7,26 @@ import { useRoute } from 'vue-router'
 import SearchComponent from '@/components/HomePageAd/SearchComponent.vue'
 
 const ads = ref([])
+const currentPage = ref(1)
+const totalPages = ref(1)
+const searchParams = ref({})
 const route = useRoute()
-async function fetchAds() {
+
+async function fetchAds(page = 1) {
   try {
-    let response = await axios.get(API_BASE_URL + 'ads')
-    ads.value = response.data || []
+    let response = await axios.get(`${API_BASE_URL}ads?page=${page}`)
+    ads.value = response.data.ads || []
+    totalPages.value = response.data.totalPages
+    currentPage.value = response.data.currentPage
   } catch (error) {
     console.log('API Error:', error)
     ads.value = []
   }
 }
-async function searchAdsByParams(params) {
+
+async function searchAdsByParams(params, page = 1) {
   try {
-    ads.value = []
+    searchParams.value = params
 
     const queryString = new URLSearchParams({
       city: params.city || '',
@@ -28,13 +35,15 @@ async function searchAdsByParams(params) {
       minPrice: params.minPrice || '',
       maxSize: params.maxSize || '',
       minSize: params.minSize || '',
-      type: params.type || ''
+      type: params.type || '',
+      page
     }).toString()
 
     let response = await axios.get(`${API_BASE_URL}adsBySearch?${queryString}`)
 
-    ads.value = response.data || []
-    ads.value = ads.value.reverse()
+    ads.value = response.data.ads || []
+    totalPages.value = response.data.totalPages
+    currentPage.value = response.data.currentPage
   } catch (error) {
     console.log('API Error:', error)
     ads.value = []
@@ -46,20 +55,55 @@ function handleAdDeleted(adId) {
 }
 
 onMounted(() => {
-  fetchAds()
+  fetchAds(1)
 })
+
 watch(
   () => route.query.refresh,
   () => {
     fetchAds()
   }
 )
+
+function changePage(page) {
+  currentPage.value = page
+  if (Object.keys(searchParams.value).length > 0) {
+    searchAdsByParams(searchParams.value, page)
+  } else {
+    fetchAds(page)
+  }
+}
+
+function resetAds() {
+  currentPage.value = 1
+  searchParams.value = {}
+  fetchAds(1)
+}
+
+const paginationButtons = computed(() => {
+  const buttons = []
+  const total = totalPages.value
+
+  if (total <= 1) return buttons
+
+  if (currentPage.value > 1) {
+    buttons.push(currentPage.value - 1)
+  }
+
+  buttons.push(currentPage.value)
+
+  if (currentPage.value < total) {
+    buttons.push(currentPage.value + 1)
+  }
+
+  return buttons
+})
 </script>
 
 <template>
   <div class="homepage-main">
     <div class="search-component-div">
-      <SearchComponent :searchAds="searchAdsByParams" :reset="fetchAds" />
+      <SearchComponent :searchAds="searchAdsByParams" :reset="resetAds" />
     </div>
     <div class="ads-components-div">
       <div v-if="ads.length > 0" class="homepage-ads">
@@ -83,9 +127,21 @@ watch(
       <div class="no-ads-div" v-else>
         <h1>Nema dostupnih oglasa</h1>
       </div>
+
+      <div class="pagination" v-if="paginationButtons.length > 0">
+        <button
+          v-for="page in paginationButtons"
+          :key="page"
+          @click="changePage(page)"
+          :class="{ active: currentPage === page }"
+        >
+          {{ page }}
+        </button>
+      </div>
     </div>
   </div>
 </template>
+
 <style scoped>
 .homepage-main {
   display: flex;
@@ -107,18 +163,51 @@ watch(
 .ads-components-div {
   width: 70%;
   min-height: 100vh;
-  overflow-y: auto;
+  overflow-y: none;
   border: 3px solid #0f2746;
   margin-top: 50px;
   margin-right: 20px;
   border-radius: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .homepage-ads {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  overflow-y: auto;
+  height: 90%;
+  overflow-y: none;
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.pagination button {
+  user-select: none;
+  margin: 0 5px;
+  padding: 10px 15px;
+  border: 1px solid #0f2746;
+  background-color: #ffffff;
+  color: #0f2746;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.pagination button.active {
+  background-color: #0f2746;
+  color: #ffffff;
+}
+
+.pagination button:hover {
+  background-color: #0f2746;
+  color: #ffffff;
 }
 
 .no-ads-div {
